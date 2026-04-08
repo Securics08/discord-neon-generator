@@ -2,211 +2,217 @@
 <html lang="hu">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Discord All-in-One Generator v30 - Deep Black Background</title>
+<title>Discord Neon + ANSI + INI</title>
 <style>
-  :root {
-    --bg-dark: #1e1f22; /* Mélyfekete Discord háttér a szürke helyett */
-    --container-bg: #2b2d31;
-    --input-bg: #1e1f22;
-    --discord-blue: #5865f2;
-    --discord-green: #248046;
-    --text-muted: #b5bac1;
-  }
-
-  body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: #eee; padding: 20px; display: flex; flex-direction: column; align-items: center; margin: 0; }
-  .container { max-width: 900px; width: 100%; background: var(--container-bg); padding: 30px; border-radius: 15px; border: 1px solid #444; box-shadow: 0 10px 50px rgba(0,0,0,0.5); margin-bottom: 30px; box-sizing: border-box; }
-  h2 { text-align: center; margin-top: 0; color: #fff; }
-  .label { font-size: 11px; margin-bottom: 8px; color: var(--text-muted); text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
-
-  select, textarea, input[type="range"] { width: 100%; background: var(--input-bg); color: #eee; border: 1px solid #444; padding: 12px; border-radius: 8px; box-sizing: border-box; font-size: 15px; margin-bottom: 15px; }
-  textarea { height: 180px; resize: vertical; border: 1px solid var(--discord-blue); outline: none; font-family: 'Consolas', monospace; }
-
-  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 10px; margin-bottom: 25px; }
-  .color-item { height: 40px; border-radius: 8px; cursor: pointer; border: 2px solid rgba(0,0,0,0.2); transition: 0.2s; }
-  .color-item.active { border-color: #fff; box-shadow: 0 0 10px rgba(255,255,255,0.2); }
-
-  .preview-box { background: var(--input-bg); padding: 20px; border-radius: 8px; font-family: 'Consolas', monospace; white-space: pre-wrap; margin-bottom: 15px; min-height: 80px; border: 1px solid #444; line-height: 1.5; overflow-x: auto; }
-  
-  .btn { padding: 15px; background: var(--discord-blue); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; transition: 0.3s; }
-  .btn.success { background: var(--discord-green) !important; }
-
-  .copy-status { color: #43b581; font-weight: bold; font-size: 14px; text-align: center; margin-top: 8px; height: 20px; opacity: 0; transition: 0.3s; }
-  .flex-row { display: flex; gap: 15px; align-items: center; margin-bottom: 10px; }
-  .flex-row > div { flex: 1; }
-
-  /* Importált fontok szimulációja stílusokkal */
-  .font-minecraft { font-family: 'Courier New', monospace; font-weight: bold; letter-spacing: -1px; }
-  .font-gta { font-family: 'Impact', sans-serif; text-transform: uppercase; font-style: italic; }
+body { font-family:'Segoe UI', sans-serif; background:#313338; color:#eee; padding:20px; display:flex; flex-direction:column; align-items:center; }
+.container { max-width:950px; width:100%; background:#2b2d31; padding:30px; border-radius:15px; border:1px solid #444; box-shadow:0 10px 50px rgba(0,0,0,0.7); margin-bottom:40px; }
+.tabs { display:flex; gap:10px; margin-bottom:20px; }
+.tab { flex:1; padding:10px; text-align:center; background:#1e1f22; cursor:pointer; border-radius:6px; font-weight:bold; }
+.tab.active { background:#5865f2; color:#fff; }
+.section { display:none; }
+textarea, select { width:100%; border-radius:6px; border:none; padding:12px; font-size:16px; box-sizing:border-box; resize:vertical; font-family:monospace; }
+#textAnsi { height:200px; font-size:20px; background:#1e1f22; color:#eee; }
+#textIni { height:350px; font-size:16px; background:#111; color:#ccc; }
+#charCount { margin-top:5px; font-size:14px; }
+#charCount.ok { color:#0f0; }
+#charCount.warn { color:#f44; }
+button { margin-top:15px; padding:10px 20px; background:#222; color:#fff; border:none; border-radius:6px; cursor:pointer; }
+button:hover { background:#333; }
+.color-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:10px; margin-top:10px; }
+.color-item { height:35px; border-radius:6px; cursor:pointer; border:1px solid rgba(255,255,255,0.2); transition:0.2s; }
+.color-item:hover { transform:scale(1.1); border-color:#fff; }
+.color-item.active { border:2px solid #fff; box-shadow:0 0 15px rgba(255,255,255,0.5); }
+#preview-container { margin-top:20px; background:#313338; padding:15px; border-radius:10px; border:1px dashed #555; overflow:auto; max-height:400px; }
+#preview-text { white-space:pre-wrap; word-wrap:break-word; line-height:1.4; font-size:22px; }
 </style>
 </head>
 <body>
 
 <div class="container">
-  <h2>Neon Kép Generátor</h2>
-  <textarea id="inputText" placeholder="Írd ide a szöveget..." oninput="updateNeon()"></textarea>
-  <div class="flex-row">
-    <select id="fontSelect" onchange="updateNeon()">
-      <option value="Arial">1. Arial (Alapértelmezett)</option>
-      <option value="Impact">2. Impact (Vastag)</option>
-      <option value="'Courier New'">3. Courier New (Írógép)</option>
-      <option value="Georgia">4. Georgia (Talpas)</option>
-      <option value="'Times New Roman'">5. Times New Roman</option>
-      <option value="Verdana">6. Verdana (Modern)</option>
-      <option value="'Comic Sans MS'">7. Comic Sans (Játékos)</option>
-      <option value="'Trebuchet MS'">8. Trebuchet</option>
-      <option value="monospace">9. Monospace (Kód)</option>
-      <option value="serif">10. Serif (Klasszikus)</option>
-      <option value="sans-serif">11. Sans-Serif (Letisztult)</option>
-      <option value="cursive">12. Cursive (Kézírás)</option>
-      <option value="fantasy">13. Fantasy (Díszes)</option>
-      <option value="Tahoma">14. Tahoma</option>
-      <option value="Palatino">15. Palatino (Elegáns)</option>
-    </select>
-    <input type="range" id="fontSize" min="10" max="150" value="50" oninput="updateNeon()">
-  </div>
-  <div class="color-grid" id="colorGrid"></div>
-  <button onclick="downloadImage()" class="btn" style="background:var(--discord-green)">NEON KÉP MENTÉSE (PNG)</button>
-  <div id="preview-container" style="background:var(--input-bg); margin-top:20px; padding:30px; text-align:center; border-radius:10px; border: 1px dashed #555;">
-    <div id="preview-text" style="white-space: pre-wrap; display: inline-block;"></div>
-  </div>
+
+<div class="tabs">
+  <div class="tab active" data-target="neon">Neon Generátor</div>
+  <div class="tab" data-target="ansi">ANSI Színek</div>
+  <div class="tab" data-target="ini">Discord INI</div>
 </div>
 
-<div class="container">
-  <div class="label">Eszköz kiválasztása:</div>
-  <select id="menuSelect" onchange="toggleMenu()">
-    <option value="ansi">ANSI Szövegszínező</option>
-    <option value="ini">INI Kód Blokkoló</option>
+<!-- Neon Generátor -->
+<div id="neon" class="section" style="display:block;">
+  <textarea id="inputText">Próbáld ki a 34px-es méretet!</textarea>
+  <div style="margin-top:10px;">
+    <label>Betűtípus:</label>
+    <select id="fontSelect">
+      <optgroup label="Alap stílusok">
+        <option value="Arial">Arial</option>
+        <option value="'Segoe UI', sans-serif">Segoe UI</option>
+        <option value="'Verdana', sans-serif">Verdana</option>
+      </optgroup>
+      <optgroup label="Vastag & Mém">
+        <option value="'Impact', sans-serif">Impact</option>
+        <option value="'Arial Black', sans-serif">Arial Black</option>
+      </optgroup>
+      <optgroup label="Hacker & Retro">
+        <option value="'Courier New', monospace">Courier</option>
+        <option value="'Lucida Console', monospace">Lucida</option>
+        <option value="'Trebuchet MS', sans-serif">Trebuchet</option>
+      </optgroup>
+      <optgroup label="Díszes & Elegáns">
+        <option value="'Georgia', serif">Georgia</option>
+        <option value="'Times New Roman', serif">Times</option>
+        <option value="'Palatino Linotype', 'Book Antiqua', Palatino, serif">Palatino</option>
+        <option value="'Copperplate', 'Copperplate Gothic Light', sans-serif">Copperplate</option>
+      </optgroup>
+      <optgroup label="Különleges">
+        <option value="'Comic Sans MS', cursive">Comic Sans</option>
+        <option value="'Brush Script MT', cursive">Brush Script</option>
+        <option value="fantasy">Fantasy</option>
+      </optgroup>
+    </select>
+  </div>
+  <div style="margin-top:10px;">
+    <label>Betűméret: <span id="sizeDisplay">22px</span></label>
+    <input type="range" id="fontSize" min="8" max="34" value="22">
+  </div>
+  <div class="color-grid" id="colorGrid"></div>
+  <button id="saveBtn">KÉP MENTÉSE</button>
+  <div id="preview-container"><div id="preview-text"></div></div>
+</div>
+
+<!-- ANSI Színek -->
+<div id="ansi" class="section">
+  <textarea id="textAnsi" placeholder="Ide írd a szöveget"></textarea>
+  <select id="ansiColor">
+    <option value="34">🔵 Kék</option>
+    <option value="32">🟢 Zöld</option>
+    <option value="33">🟡 Sárga</option>
+    <option value="36">🟦 Cyan</option>
+    <option value="35">🟣 Magenta</option>
+    <option value="31">🔴 Piros</option>
   </select>
+  <button onclick="copyColor()">Másolás</button>
+  <p id="infoAnsi"></p>
+</div>
 
-  <div id="ansiSection">
-    <div class="label">ANSI Előnézet:</div>
-    <div id="ansiPreview" class="preview-box"></div>
-    <textarea id="textAnsi" placeholder="Írj ide..." oninput="updateAnsiPreview()"></textarea>
-    <div class="flex-row">
-      <select id="ansiColor" onchange="updateAnsiPreview()">
-        <option value="30">Sötétszürke (ANSI Black)</option><option value="31">Piros</option><option value="32">Zöld</option><option value="33">Sárga</option>
-        <option value="34">Kék</option><option value="35">Lila</option><option value="36">Cián</option><option value="37" selected>Fehér</option>
-      </select>
-      <select id="ansiBg" onchange="updateAnsiPreview()"><option value="none">Nincs háttér</option><option value="40">Fekete háttér</option></select>
-      <select id="ansiStyle" onchange="updateAnsiPreview()"><option value="0">Normál</option><option value="1" selected>Vastag</option></select>
-    </div>
-    <button class="btn" id="ansiBtn" onclick="copyAnsi()">MÁSOLÁS ANSI KÓDKÉNT</button>
-    <div id="ansiStatus" class="copy-status">VÁGÓLAPRA MÁSOLVA!</div>
-  </div>
+<!-- INI blokk – stabil -->
+<div id="ini" class="section">
+<h3>Discord INI blokk készítő (max 4000 karakter)</h3>
+<textarea id="textIni" placeholder="Ide írd be az INI szöveget..."></textarea>
+<div id="charCount" class="ok">0 / 4000 karakter</div>
+<button onclick="copyIniBlock()">Másolás Discord INI blokkba</button>
+<p id="infoIni"></p>
+</div>
 
-  <div id="iniSection" style="display:none;">
-    <div class="label">INI Előnézet:</div>
-    <div id="iniPreview" class="preview-box" style="color: #ccc;"></div>
-    <textarea id="textIni" placeholder="[Szekció]&#10;Kulcs=Érték ; megjegyzés..." oninput="updateIniPreview()"></textarea>
-    <button class="btn" id="iniBtn" onclick="copyIni()">MÁSOLÁS INI BLOKKKÉNT</button>
-    <div id="iniStatus" class="copy-status">VÁGÓLAPRA MÁSOLVA!</div>
-  </div>
 </div>
 
 <script>
-const neonCols = ["#000000","#C0C0C0","#FFFFFF","#FF0000","#FF00FF","#00FF00","#FFFF00","#0000FF","#00FFFF","#FF5733","#FF8D33","#FFC300","#DAF7A6","#581845","#900C3F","#C70039","#FF1493","#00FA9A","#00CED1","#1E90FF","#7B68EE","#ADFF2F","#F0E68C","#E6E6FA","#FFDAB9","#FF4500","#2E8B57","#4682B4","#D2691E","#9ACD32","#8A2BE2","#00BFFF"];
-let selNeon = "#00FF00";
+// Tab váltás
+const tabs=document.querySelectorAll('.tab');
+const sections=document.querySelectorAll('.section');
+tabs.forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    tabs.forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    sections.forEach(s=>s.style.display='none');
+    document.getElementById(tab.dataset.target).style.display='block';
+  });
+});
 
-window.onload = function() {
-  const g = document.getElementById('colorGrid');
-  if (g) {
-    neonCols.forEach(c => {
-      const d = document.createElement('div'); d.className='color-item'; d.style.backgroundColor=c;
-      if(c === selNeon) d.classList.add('active');
-      d.onclick=()=>{ selNeon=c; document.querySelectorAll('.color-item').forEach(x=>x.classList.remove('active')); d.classList.add('active'); updateNeon(); }; 
-      g.appendChild(d);
-    });
-  }
-  updateNeon(); 
-  updateAnsiPreview();
-};
+// Neon Generátor
+const colors=[
+  {hex:"#0000FF"},{hex:"#00FF00"},{hex:"#FFFF00"},{hex:"#00FFFF"},
+  {hex:"#FF00FF"},{hex:"#FF0000"},{hex:"#FFA500"},{hex:"#800080"},
+  {hex:"#008000"},{hex:"#800000"},{hex:"#000080"},{hex:"#00FF7F"},
+  {hex:"#FFD700"},{hex:"#DC143C"},{hex:"#00CED1"},{hex:"#FF1493"}
+];
+let selectedColor="#00FF00";
+const grid=document.getElementById('colorGrid');
+colors.forEach(c=>{
+  const div=document.createElement('div');
+  div.className='color-item';
+  if(c.hex===selectedColor) div.classList.add('active');
+  div.style.backgroundColor=c.hex;
+  div.onclick=()=>{
+    selectedColor=c.hex;
+    document.querySelectorAll('.color-item').forEach(i=>i.classList.remove('active'));
+    div.classList.add('active');
+    updateNeon();
+  };
+  grid.appendChild(div);
+});
+const inputText=document.getElementById('inputText');
+const preview=document.getElementById('preview-text');
+const fontSizeInput=document.getElementById('fontSize');
+const sizeDisplay=document.getElementById('sizeDisplay');
+const fontSelect=document.getElementById('fontSelect');
 
-function toggleMenu() {
-  const m = document.getElementById('menuSelect').value;
-  document.getElementById('ansiSection').style.display = m==='ansi'?'block':'none';
-  document.getElementById('iniSection').style.display = m==='ini'?'block':'none';
+fontSizeInput.addEventListener('input',()=>{sizeDisplay.textContent=fontSizeInput.value+'px'; updateNeon();});
+inputText.addEventListener('input',updateNeon);
+fontSelect.addEventListener('change',updateNeon);
+
+function updateNeon(){
+  preview.style.color=selectedColor;
+  preview.style.fontSize=fontSizeInput.value+'px';
+  preview.style.fontFamily=fontSelect.value;
+  preview.textContent=inputText.value;
 }
 
-function updateNeon() {
-  const p = document.getElementById("preview-text");
-  if (!p) return;
-  p.style.color = selNeon; 
-  p.style.fontFamily = document.getElementById("fontSelect").value;
-  p.style.fontSize = document.getElementById("fontSize").value + "px";
-  p.style.textShadow = selNeon !== "#000000" ? `0 0 10px ${selNeon}, 0 0 20px ${selNeon}` : "none";
-  p.textContent = document.getElementById("inputText").value || "Neon Előnézet";
+// PNG mentés javítva – a kiválasztott színt használja
+document.getElementById('saveBtn').addEventListener('click',()=>{
+  const canvas=document.createElement('canvas');
+  const ctx=canvas.getContext('2d');
+  const text=inputText.value;
+  const size=parseInt(fontSizeInput.value);
+  const font=fontSelect.value;
+  const padding=20;
+
+  ctx.font=size+'px '+font;
+  const lines=text.split('\n');
+
+  canvas.width=Math.max(...lines.map(l=>ctx.measureText(l).width))+padding*2;
+  canvas.height=lines.length*(size*1.5)+padding*2;
+
+  ctx.fillStyle="#313338"; ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  ctx.fillStyle=selectedColor; ctx.font=size+'px '+font; ctx.textBaseline='top';
+  lines.forEach((l,i)=>{ctx.fillText(l,padding,padding+i*size*1.5);});
+
+  const link=document.createElement('a');
+  link.href=canvas.toDataURL('image/png');
+  link.download='discord_neon.png';
+  link.click();
+});
+
+// ANSI másolás
+function copyColor(){
+  const text=document.getElementById("textAnsi").value;
+  const color=document.getElementById("ansiColor").value;
+  const esc="\x1b";
+  const result="```ansi\n"+esc+"[1;"+color+"m"+text+esc+"[0m\n```";
+  navigator.clipboard.writeText(result).then(()=>{
+    document.getElementById("infoAnsi").textContent="✔ Színes szöveg másolva! Discordban Ctrl+V";
+  });
 }
 
-function updateAnsiPreview() {
-  const pre = document.getElementById("ansiPreview");
-  if (!pre) return;
-  const map = {"30":"#4f545c", "31":"#ff5c5c", "32":"#43b581", "33":"#faa61a", "34":"#7289da", "35":"#eb459e", "36":"#48e1e1", "37":"#ffffff"};
-  const c = document.getElementById("ansiColor").value;
-  const bg = document.getElementById("ansiBg").value;
-  pre.style.color = map[c];
-  pre.style.backgroundColor = bg==='40'?'#000':'transparent';
-  pre.style.fontWeight = document.getElementById("ansiStyle").value==='1'?'bold':'normal';
-  pre.textContent = document.getElementById("textAnsi").value || "ANSI Előnézet";
-}
-
-function copyAnsi() {
-  const esc = String.fromCharCode(27);
-  const s = document.getElementById("ansiStyle").value;
-  const c = document.getElementById("ansiColor").value;
-  const b = document.getElementById("ansiBg").value;
-  let rawText = document.getElementById("textAnsi").value;
-  rawText = rawText.replace(/```/g, "'''"); 
-  const lines = rawText.split('\n');
-  let code = b === "none" ? `${s};${c}` : `${s};${c};${b}`;
-  const content = lines.map(l => l.length > 0 ? esc + "[" + code + "m" + l + esc + "[0m" : "").join('\n');
-  const finalResult = "```ansi\n" + content + "\n```";
-  navigator.clipboard.writeText(finalResult).then(() => showStatus('ansi'));
-}
-
-function updateIniPreview() {
-  const t = document.getElementById("textIni").value;
-  const pre = document.getElementById("iniPreview");
-  if (!pre) return;
-  if (!t) { pre.innerHTML = "INI Előnézet"; return; }
-  let html = t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-    .replace(/(\[.*?\])/g, '<b style="color:#faa61a">$1</b>')
-    .replace(/(;.*)/g, '<i style="color:#72767d">$1</i>')
-    .replace(/([^=\n]+)=/g, '<span style="color:#b9bbbe">$1</span><span style="color:#7289da">=</span>')
-    .replace(/=([^;\n]+)/g, '=<span style="color:#43b581">$1</span>');
-  pre.innerHTML = html;
-}
-
-function copyIni() {
-  const text = document.getElementById("textIni").value;
-  navigator.clipboard.writeText("```ini\n" + text + "\n```").then(() => showStatus('ini'));
-}
-
-function showStatus(t) {
-  const s = document.getElementById(t+'Status'); 
-  const b = document.getElementById(t+'Btn');
-  if (s && b) {
-    s.style.opacity = "1"; b.classList.add('success');
-    setTimeout(() => { s.style.opacity = "0"; b.classList.remove('success'); }, 2000);
-  }
-}
-
-function downloadImage() {
-  const text = document.getElementById("inputText").value || "Neon";
-  const lines = text.split('\n');
-  const size = parseInt(document.getElementById("fontSize").value);
-  const font = document.getElementById("fontSelect").value;
-  const lh = size * 1.3;
-  const cvs = document.createElement("canvas");
-  const ctx = cvs.getContext("2d");
-  cvs.width = 1200; cvs.height = Math.max(400, (lines.length * lh) + 200);
-  ctx.fillStyle = "#1e1f22"; ctx.fillRect(0, 0, cvs.width, cvs.height);
-  ctx.fillStyle = selNeon; ctx.font = "bold " + size + "px " + font; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-  if(selNeon !== "#000000") { ctx.shadowColor = selNeon; ctx.shadowBlur = 15; }
-  const sy = (cvs.height / 2) - ((lines.length - 1) * lh / 2);
-  lines.forEach((l, i) => ctx.fillText(l, 600, sy + (i * lh)));
-  const a = document.createElement("a"); a.download = "discord_neon_gen.png"; a.href = cvs.toDataURL(); a.click();
+// INI blokk – stabil
+const textIni=document.getElementById("textIni");
+const charCount=document.getElementById("charCount");
+const infoIni=document.getElementById("infoIni");
+const MAX_LENGTH=4000;
+textIni.addEventListener("input",()=>{
+  const len=textIni.value.length;
+  charCount.textContent=`${len} / ${MAX_LENGTH} karakter`;
+  if(len>MAX_LENGTH){charCount.classList.remove("ok");charCount.classList.add("warn");}
+  else{charCount.classList.remove("warn");charCount.classList.add("ok");}
+  infoIni.textContent="";
+});
+function copyIniBlock(){
+  const text=textIni.value;
+  if(text.length>MAX_LENGTH){alert("Túl hosszú! Max 4000 karakter."); return;}
+  const block="```ini\n"+text+"\n```";
+  navigator.clipboard.writeText(block).then(()=>{infoIni.textContent="✔ INI blokk sikeresen másolva! Discordba Ctrl+V.";})
+  .catch(()=>{infoIni.textContent="✘ Hiba történt a másolás során."});
 }
 </script>
+
 </body>
 </html>
