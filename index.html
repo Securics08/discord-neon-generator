@@ -13,206 +13,187 @@ body { font-family:'Segoe UI', sans-serif; background:#313338; color:#eee; paddi
 textarea, select { width:100%; border-radius:6px; border:none; padding:12px; font-size:16px; box-sizing:border-box; resize:vertical; font-family:monospace; }
 #textAnsi { height:200px; font-size:20px; background:#1e1f22; color:#eee; }
 #textIni { height:350px; font-size:16px; background:#111; color:#ccc; }
-#charCount { margin-top:5px; font-size:14px; }
-#charCount.ok { color:#0f0; }
-#charCount.warn { color:#f44; }
-button { margin-top:15px; padding:10px 20px; background:#222; color:#fff; border:none; border-radius:6px; cursor:pointer; }
-button:hover { background:#333; }
-.color-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:10px; margin-top:10px; }
-.color-item { height:35px; border-radius:6px; cursor:pointer; border:1px solid rgba(255,255,255,0.2); transition:0.2s; }
-.color-item:hover { transform:scale(1.1); border-color:#fff; }
-.color-item.active { border:2px solid #fff; box-shadow:0 0 15px rgba(255,255,255,0.5); }
+
+/* Számlálók stílusa - Mindig látható zöld, hiba esetén piros */
+.count { text-align:right; font-size:14px; margin-top:5px; color:#00FF00 !important; font-weight:bold; text-shadow: 1px 1px 2px #000; }
+.count.warn { color:#ff4444 !important; }
+
+button { margin-top:15px; padding:12px; background:#222; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:bold; width: 100%; }
+button:hover { background:#444; border:1px solid #5865f2; }
+
+/* Színrács javítása, hogy minden szín elférjen */
+.color-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(40px, 1fr)); gap:8px; margin-top:10px; background: #1e1f22; padding: 10px; border-radius: 8px; }
+.color-item { height:35px; border-radius:4px; cursor:pointer; border:1px solid rgba(255,255,255,0.2); }
+.color-item.active { border:2px solid #fff; box-shadow:0 0 10px rgba(255,255,255,0.8); }
+
+/* Betűtípus választó színezése */
+#fontSelect { background: #000; color: #00FF00; font-weight: bold; }
+#fontSelect option { background: #111; color: #00FF00; }
+
 #preview-container { margin-top:20px; background:#313338; padding:15px; border-radius:10px; border:1px dashed #555; overflow:auto; max-height:400px; }
-#preview-text { white-space:pre-wrap; word-wrap:break-word; line-height:1.4; font-size:22px; }
+#preview-text { white-space:pre; line-height:1.2; }
 </style>
 </head>
 <body>
 
 <div class="container">
+  <div class="tabs">
+    <div class="tab active" data-target="neon">Neon Generátor</div>
+    <div class="tab" data-target="ansi">ANSI Színek</div>
+    <div class="tab" data-target="ini">Discord INI</div>
+  </div>
 
-<div class="tabs">
-  <div class="tab active" data-target="neon">Neon Generátor</div>
-  <div class="tab" data-target="ansi">ANSI Színek</div>
-  <div class="tab" data-target="ini">Discord INI</div>
-</div>
-
-<!-- Neon Generátor -->
-<div id="neon" class="section" style="display:block;">
-  <textarea id="inputText">Próbáld ki a 34px-es méretet!</textarea>
-  <div style="margin-top:10px;">
-    <label>Betűtípus:</label>
-    <select id="fontSelect">
-      <optgroup label="Alap stílusok">
+  <div id="neon" class="section" style="display:block;">
+    <textarea id="inputTextNeon" maxlength="4000">Írj ide...</textarea>
+    <div class="count" id="cNeon">0 / 4000</div>
+    <div style="margin-top:10px;">
+      <label>Betűtípus (Színes lista):</label>
+      <select id="fontSelect">
         <option value="Arial">Arial</option>
-        <option value="'Segoe UI', sans-serif">Segoe UI</option>
-        <option value="'Verdana', sans-serif">Verdana</option>
-      </optgroup>
-      <optgroup label="Vastag & Mém">
-        <option value="'Impact', sans-serif">Impact</option>
-        <option value="'Arial Black', sans-serif">Arial Black</option>
-      </optgroup>
-      <optgroup label="Hacker & Retro">
-        <option value="'Courier New', monospace">Courier</option>
-        <option value="'Lucida Console', monospace">Lucida</option>
-        <option value="'Trebuchet MS', sans-serif">Trebuchet</option>
-      </optgroup>
-      <optgroup label="Díszes & Elegáns">
-        <option value="'Georgia', serif">Georgia</option>
-        <option value="'Times New Roman', serif">Times</option>
-        <option value="'Palatino Linotype', 'Book Antiqua', Palatino, serif">Palatino</option>
-        <option value="'Copperplate', 'Copperplate Gothic Light', sans-serif">Copperplate</option>
-      </optgroup>
-      <optgroup label="Különleges">
-        <option value="'Comic Sans MS', cursive">Comic Sans</option>
-        <option value="'Brush Script MT', cursive">Brush Script</option>
+        <option value="'Segoe UI'">Segoe UI</option>
+        <option value="Verdana">Verdana</option>
+        <option value="Impact">Impact</option>
+        <option value="'Arial Black'">Arial Black</option>
+        <option value="'Courier New'">Courier New</option>
+        <option value="'Lucida Console'">Lucida Console</option>
+        <option value="'Trebuchet MS'">Trebuchet MS</option>
+        <option value="Georgia">Georgia</option>
+        <option value="'Times New Roman'">Times New Roman</option>
+        <option value="Palatino">Palatino</option>
+        <option value="Copperplate">Copperplate</option>
+        <option value="'Comic Sans MS'">Comic Sans</option>
+        <option value="'Brush Script MT'">Brush Script</option>
+        <option value="Tahoma">Tahoma</option>
+        <option value="Geneva">Geneva</option>
+        <option value="Helvetica">Helvetica</option>
+        <option value="Cambria">Cambria</option>
+        <option value="Calibri">Calibri</option>
+        <option value="Candara">Candara</option>
+        <option value="Optima">Optima</option>
+        <option value="Perpetua">Perpetua</option>
+        <option value="Monaco">Monaco</option>
+        <option value="Consolas">Consolas</option>
+        <option value="Garamond">Garamond</option>
+        <option value="Didot">Didot</option>
+        <option value="Rockwell">Rockwell</option>
+        <option value="Baskerville">Baskerville</option>
+        <option value="Papyrus">Papyrus</option>
+        <option value="'Century Gothic'">Century Gothic</option>
+        <option value="Futura">Futura</option>
+        <option value="'Franklin Gothic Medium'">Franklin Gothic</option>
+        <option value="'Book Antiqua'">Book Antiqua</option>
+        <option value="'Segoe Script'">Segoe Script</option>
         <option value="fantasy">Fantasy</option>
-      </optgroup>
+      </select>
+    </div>
+    <div style="margin-top:10px;">
+      <label>Betűméret: <span id="szDisplay" style="color:#0f0; font-weight:bold;">22px</span></label>
+      <input type="range" id="fsNeon" min="8" max="150" value="22">
+    </div>
+    <div class="color-grid" id="cGrid"></div>
+    <button id="saveBtnNeon">KÉP MENTÉSE (BEÁLLÍTOTT MÉRETTEL)</button>
+    <div id="preview-container"><div id="preview-text"></div></div>
+  </div>
+
+  <div id="ansi" class="section">
+    <textarea id="textAnsi" maxlength="4000" placeholder="ANSI szöveg..."></textarea>
+    <div class="count" id="cAnsi">0 / 4000</div>
+    <select id="ansiCol" style="margin-top:10px;">
+      <option value="32">🟢 Zöld</option>
+      <option value="34">🔵 Kék</option>
+      <option value="31">🔴 Piros</option>
+      <option value="33">🟡 Sárga</option>
+      <option value="36">🟦 Cyan</option>
+      <option value="35">🟣 Magenta</option>
     </select>
+    <button onclick="cpAnsi()">ANSI MÁSOLÁS</button>
   </div>
-  <div style="margin-top:10px;">
-    <label>Betűméret: <span id="sizeDisplay">22px</span></label>
-    <input type="range" id="fontSize" min="8" max="34" value="22">
+
+  <div id="ini" class="section">
+    <textarea id="textIni" maxlength="4000" placeholder="INI kód..."></textarea>
+    <div class="count" id="cIni">0 / 4000</div>
+    <button onclick="cpIni()">INI MÁSOLÁSA</button>
   </div>
-  <div class="color-grid" id="colorGrid"></div>
-  <button id="saveBtn">KÉP MENTÉSE</button>
-  <div id="preview-container"><div id="preview-text"></div></div>
-</div>
-
-<!-- ANSI Színek -->
-<div id="ansi" class="section">
-  <textarea id="textAnsi" placeholder="Ide írd a szöveget"></textarea>
-  <select id="ansiColor">
-    <option value="34">🔵 Kék</option>
-    <option value="32">🟢 Zöld</option>
-    <option value="33">🟡 Sárga</option>
-    <option value="36">🟦 Cyan</option>
-    <option value="35">🟣 Magenta</option>
-    <option value="31">🔴 Piros</option>
-  </select>
-  <button onclick="copyColor()">Másolás</button>
-  <p id="infoAnsi"></p>
-</div>
-
-<!-- INI blokk – stabil -->
-<div id="ini" class="section">
-<h3>Discord INI blokk készítő (max 4000 karakter)</h3>
-<textarea id="textIni" placeholder="Ide írd be az INI szöveget..."></textarea>
-<div id="charCount" class="ok">0 / 4000 karakter</div>
-<button onclick="copyIniBlock()">Másolás Discord INI blokkba</button>
-<p id="infoIni"></p>
-</div>
-
 </div>
 
 <script>
-// Tab váltás
-const tabs=document.querySelectorAll('.tab');
-const sections=document.querySelectorAll('.section');
-tabs.forEach(tab=>{
-  tab.addEventListener('click',()=>{
-    tabs.forEach(t=>t.classList.remove('active'));
-    tab.classList.add('active');
-    sections.forEach(s=>s.style.display='none');
-    document.getElementById(tab.dataset.target).style.display='block';
-  });
-});
+let selC = "#00FF00";
+// Kibővített színlista: Fehér és Fekete az elején
+const colors = ["#FFFFFF","#000000","#0000FF","#00FF00","#FFFF00","#00FFFF","#FF00FF","#FF0000","#FFA500","#800080","#008000","#800000","#000080","#00FF7F","#FFD700","#DC143C","#00CED1","#FF1493"];
 
-// Neon Generátor
-const colors=[
-  {hex:"#0000FF"},{hex:"#00FF00"},{hex:"#FFFF00"},{hex:"#00FFFF"},
-  {hex:"#FF00FF"},{hex:"#FF0000"},{hex:"#FFA500"},{hex:"#800080"},
-  {hex:"#008000"},{hex:"#800000"},{hex:"#000080"},{hex:"#00FF7F"},
-  {hex:"#FFD700"},{hex:"#DC143C"},{hex:"#00CED1"},{hex:"#FF1493"}
-];
-let selectedColor="#00FF00";
-const grid=document.getElementById('colorGrid');
-colors.forEach(c=>{
-  const div=document.createElement('div');
-  div.className='color-item';
-  if(c.hex===selectedColor) div.classList.add('active');
-  div.style.backgroundColor=c.hex;
-  div.onclick=()=>{
-    selectedColor=c.hex;
-    document.querySelectorAll('.color-item').forEach(i=>i.classList.remove('active'));
-    div.classList.add('active');
-    updateNeon();
+document.querySelectorAll('.tab').forEach(t => {
+  t.onclick = () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.style.display = 'none');
+    t.classList.add('active');
+    document.getElementById(t.dataset.target).style.display = 'block';
   };
-  grid.appendChild(div);
 });
-const inputText=document.getElementById('inputText');
-const preview=document.getElementById('preview-text');
-const fontSizeInput=document.getElementById('fontSize');
-const sizeDisplay=document.getElementById('sizeDisplay');
-const fontSelect=document.getElementById('fontSelect');
 
-fontSizeInput.addEventListener('input',()=>{sizeDisplay.textContent=fontSizeInput.value+'px'; updateNeon();});
-inputText.addEventListener('input',updateNeon);
-fontSelect.addEventListener('change',updateNeon);
+const grid = document.getElementById('cGrid');
+colors.forEach(c => {
+  const d = document.createElement('div'); d.className = 'color-item';
+  if(c === selC) d.classList.add('active');
+  d.style.backgroundColor = c;
+  d.title = c;
+  d.onclick = () => {
+    selC = c; document.querySelectorAll('.color-item').forEach(i => i.classList.remove('active'));
+    d.classList.add('active'); 
+    // Betűtípus választó színének frissítése a kiválasztott színre
+    document.getElementById('fontSelect').style.color = c;
+    upNeon();
+  };
+  grid.appendChild(d);
+});
 
-function updateNeon(){
-  preview.style.color=selectedColor;
-  preview.style.fontSize=fontSizeInput.value+'px';
-  preview.style.fontFamily=fontSelect.value;
-  preview.textContent=inputText.value;
+function updateCounter(id, countId) {
+  const val = document.getElementById(id).value.length;
+  const el = document.getElementById(countId);
+  el.textContent = val + " / 4000";
+  if(val >= 3900) el.classList.add("warn"); else el.classList.remove("warn");
 }
 
-// PNG mentés javítva – a kiválasztott színt használja
-document.getElementById('saveBtn').addEventListener('click',()=>{
-  const canvas=document.createElement('canvas');
-  const ctx=canvas.getContext('2d');
-  const text=inputText.value;
-  const size=parseInt(fontSizeInput.value);
-  const font=fontSelect.value;
-  const padding=20;
+function upNeon() {
+  updateCounter('inputTextNeon', 'cNeon');
+  const p = document.getElementById('preview-text'), i = document.getElementById('inputTextNeon'), f = document.getElementById('fontSelect'), s = document.getElementById('fsNeon');
+  p.style.color = selC; p.style.fontFamily = f.value; p.style.fontSize = s.value + 'px';
+  p.textContent = i.value; document.getElementById('szDisplay').textContent = s.value + 'px';
+}
 
-  ctx.font=size+'px '+font;
-  const lines=text.split('\n');
+document.getElementById('inputTextNeon').oninput = upNeon;
+document.getElementById('textAnsi').oninput = () => updateCounter('textAnsi', 'cAnsi');
+document.getElementById('textIni').oninput = () => updateCounter('textIni', 'cIni');
+document.getElementById('fontSelect').onchange = upNeon;
+document.getElementById('fsNeon').oninput = upNeon;
 
-  canvas.width=Math.max(...lines.map(l=>ctx.measureText(l).width))+padding*2;
-  canvas.height=lines.length*(size*1.5)+padding*2;
-
-  ctx.fillStyle="#313338"; ctx.fillRect(0,0,canvas.width,canvas.height);
-
-  ctx.fillStyle=selectedColor; ctx.font=size+'px '+font; ctx.textBaseline='top';
-  lines.forEach((l,i)=>{ctx.fillText(l,padding,padding+i*size*1.5);});
-
-  const link=document.createElement('a');
-  link.href=canvas.toDataURL('image/png');
-  link.download='discord_neon.png';
-  link.click();
-});
-
-// ANSI másolás
-function copyColor(){
-  const text=document.getElementById("textAnsi").value;
-  const color=document.getElementById("ansiColor").value;
-  const esc="\x1b";
-  const result="```ansi\n"+esc+"[1;"+color+"m"+text+esc+"[0m\n```";
-  navigator.clipboard.writeText(result).then(()=>{
-    document.getElementById("infoAnsi").textContent="✔ Színes szöveg másolva! Discordban Ctrl+V";
+document.getElementById('saveBtnNeon').onclick = () => {
+  const i = document.getElementById('inputTextNeon'), f = document.getElementById('fontSelect'), s = document.getElementById('fsNeon');
+  const canvas = document.createElement('canvas'), ctx = canvas.getContext('2d');
+  const size = parseInt(s.value), font = f.value, pad = 40;
+  
+  ctx.font = size + "px " + font;
+  const lines = i.value.split('\n');
+  let maxW = 0;
+  lines.forEach(l => {
+    let w = ctx.measureText(l).width;
+    if (w > maxW) maxW = w;
   });
-}
 
-// INI blokk – stabil
-const textIni=document.getElementById("textIni");
-const charCount=document.getElementById("charCount");
-const infoIni=document.getElementById("infoIni");
-const MAX_LENGTH=4000;
-textIni.addEventListener("input",()=>{
-  const len=textIni.value.length;
-  charCount.textContent=`${len} / ${MAX_LENGTH} karakter`;
-  if(len>MAX_LENGTH){charCount.classList.remove("ok");charCount.classList.add("warn");}
-  else{charCount.classList.remove("warn");charCount.classList.add("ok");}
-  infoIni.textContent="";
-});
-function copyIniBlock(){
-  const text=textIni.value;
-  if(text.length>MAX_LENGTH){alert("Túl hosszú! Max 4000 karakter."); return;}
-  const block="```ini\n"+text+"\n```";
-  navigator.clipboard.writeText(block).then(()=>{infoIni.textContent="✔ INI blokk sikeresen másolva! Discordba Ctrl+V.";})
-  .catch(()=>{infoIni.textContent="✘ Hiba történt a másolás során."});
-}
+  canvas.width = maxW + (pad * 2);
+  const lh = size * 1.2;
+  canvas.height = (lines.length * lh) + (pad * 2);
+
+  ctx.fillStyle = "#313338"; ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = selC; ctx.font = size + "px " + font; ctx.textBaseline = "top";
+  lines.forEach((l, idx) => ctx.fillText(l, pad, pad + (idx * lh)));
+
+  const a = document.createElement('a'); a.href = canvas.toDataURL(); a.download = 'neon_export.png'; a.click();
+};
+
+function cpAnsi() { navigator.clipboard.writeText("```ansi\n\x1b[1;" + document.getElementById('ansiCol').value + "m" + document.getElementById('textAnsi').value + "\x1b[0m\n```"); alert("ANSI másolva!"); }
+function cpIni() { navigator.clipboard.writeText("```ini\n" + document.getElementById('textIni').value + "\n```"); alert("INI másolva!"); }
+
+upNeon();
 </script>
-
 </body>
 </html>
